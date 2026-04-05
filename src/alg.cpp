@@ -3,95 +3,99 @@
 #include <algorithm>
 
 int countPairs1(int* arr, int len, int value) {
-    std::sort(arr, arr + len);
-    int result = 0;
-
-    for (int idx = 0; idx < len; ++idx) {
-        for (int jdx = idx + 1; jdx < len; ++jdx) {
-            if (arr[idx] + arr[jdx] == value) {
-                result += 1;
-                break;
+    int count = 0;
+    for (int i = 0; i < len; ++i) {
+        for (int j = i + 1; j < len; ++j) {
+            if (arr[i] + arr[j] == value) {
+                ++count;
             }
         }
-        while (idx + 1 < len && arr[idx] == arr[idx + 1]) {
-            idx += 1;
-        }
     }
-    return result;
+    return count;
 }
 
 int countPairs2(int* arr, int len, int value) {
-    std::sort(arr, arr + len);
-    int result = 0;
-    int left = 0;
-    int right = len - 1;
+    int count = 0;
+    int lt = 0;
+    int rt = len - 1;
 
-    while (left < right) {
-        int currentSum = arr[left] + arr[right];
+    while (lt < rt) {
+        int sum = arr[lt] + arr[rt];
 
-        if (currentSum == value) {
-            result += 1;
-            left += 1;
-            right -= 1;
+        if (sum == value) {
+            if (arr[lt] == arr[rt]) {
+                int n = rt - lt + 1;
+                count += n * (n - 1) / 2;
+                break;
+            } else {
+                int ltCount = 1;
+                int rtCount = 1;
 
-            while (left < right && arr[left] == arr[left - 1]) {
-                left += 1;
+                while (lt + 1 < rt && arr[lt] == arr[lt + 1]) {
+                    ++ltCount;
+                    ++lt;
+                }
+                while (rt - 1 > lt && arr[rt] == arr[rt - 1]) {
+                    ++rtCount;
+                    --rt;
+                }
+                count += ltCount * rtCount;
+                ++lt;
+                --rt;
             }
-
-            while (left < right && arr[right] == arr[right + 1]) {
-                right -= 1;
-            }
-        } else if (currentSum < value) {
-            left += 1;
+        } else if (sum < value) {
+            ++lt;
         } else {
-            right -= 1;
+            --rt;
         }
     }
-    return result;
+    return count;
 }
 
 int countPairs3(int* arr, int len, int value) {
-    std::sort(arr, arr + len);
-    int result = 0;
+    int count = 0;
 
-    for (int idx = 0; idx < len; ++idx) {
-        int need = value - arr[idx];
+    for (int i = 0; i < len; ++i) {
+        int target = value - arr[i];
 
-        int low = idx + 1;
+        int low = i + 1;
         int high = len - 1;
-        int position = -1;
+        int first = -1;
 
         while (low <= high) {
-            int middle = low + (high - low) / 2;
-            if (arr[middle] == need) {
-                position = middle;
-                break;
-            } else if (arr[middle] < need) {
-                low = middle + 1;
+            int mid = low + (high - low) / 2;
+            if (arr[mid] == target) {
+                first = mid;
+                high = mid - 1;
+            } else if (arr[mid] < target) {
+                low = mid + 1;
             } else {
-                high = middle - 1;
+                high = mid - 1;
             }
         }
 
-        if (position != -1) {
-            result += 1;
+        if (first != -1) {
+            low = first;
+            high = len - 1;
+            int last = first;
 
-            int step = position + 1;
-            while (step < len && arr[step] == need) {
-                result += 1;
-                step += 1;
+            while (low <= high) {
+                int mid = low + (high - low) / 2;
+                if (arr[mid] == target) {
+                    last = mid;
+                    low = mid + 1;
+                } else if (arr[mid] < target) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
             }
-
-            step = position - 1;
-            while (step > idx && arr[step] == need) {
-                result += 1;
-                step -= 1;
-            }
+            count += (last - first + 1);
         }
 
-        while (idx + 1 < len && arr[idx + 1] == arr[idx]) {
-            idx += 1;
+        while (i + 1 < len && arr[i + 1] == arr[i]) {
+            ++i;
         }
     }
-    return result;
+    return count;
 }

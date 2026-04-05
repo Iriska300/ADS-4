@@ -28,10 +28,8 @@ int countPairs2(int* arr, int len, int value) {
             count++;
             lt++;
             rt--;
-            while (lt < rt && arr[lt] == arr[lt - 1]) 
-                lt++;
-            while (lt < rt && arr[rt] == arr[rt + 1]) 
-                rt--;
+            while (lt < rt && arr[lt] == arr[lt - 1]) lt++;
+            while (lt < rt && arr[rt] == arr[rt + 1]) rt--;
         } else if (sum < value) {
             lt++;
         } else {
@@ -52,10 +50,8 @@ int countPairs3(int* arr, int len, int value) {
             count++;
             lt++;
             rt--;
-            while (lt < rt && arr[lt] == arr[lt - 1]) 
-                lt++;
-            while (lt < rt && arr[rt] == arr[rt + 1]) 
-                rt--;
+            while (lt < rt && arr[lt] == arr[lt - 1]) lt++;
+            while (lt < rt && arr[rt] == arr[rt + 1]) rt--;
         } else if (sum < value) {
             lt++;
         } else {

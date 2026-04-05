@@ -1,22 +1,24 @@
 // Copyright 2021 NNTU-CS
-#include <vector>
+#include <iostream>
 #include <algorithm>
 
 int countPairs1(int* arr, int len, int value) {
+    std::sort(arr, arr + len);
     int count = 0;
-    for (int i = 0; i < len; ++i) {
-        for (int j = i + 1; j < len; ++j) {
+    for (int i = 0; i < len; i++) {
+        for (int j = i + 1; j < len; j++) {
             if (arr[i] + arr[j] == value) {
-                count++;
-            } else if (arr[i] + arr[j] > value) {
+                count = count + 1;
                 break;
             }
         }
+        while (i + 1 < len && arr[i] == arr[i + 1]) i++;
     }
     return count;
 }
 
 int countPairs2(int* arr, int len, int value) {
+    std::sort(arr, arr + len);
     int count = 0;
     int lt = 0;
     int rt = len - 1;
@@ -26,12 +28,10 @@ int countPairs2(int* arr, int len, int value) {
             count++;
             lt++;
             rt--;
-            while (lt < rt && arr[lt] == arr[lt - 1]) {
+            while (lt < rt && arr[lt] == arr[lt - 1]) 
                 lt++;
-            }
-            while (lt < rt && arr[rt] == arr[rt + 1]) {
+            while (lt < rt && arr[rt] == arr[rt + 1]) 
                 rt--;
-            }
         } else if (sum < value) {
             lt++;
         } else {
@@ -42,18 +42,24 @@ int countPairs2(int* arr, int len, int value) {
 }
 
 int countPairs3(int* arr, int len, int value) {
+    std::sort(arr, arr + len);
     int count = 0;
-    for (int i = 0; i < len; ++i) {
-        int target = value - arr[i];
-
-        if (target < arr[i]) {
-            break;
-        }
-
-        auto it_low = std::lower_bound(arr + i + 1, arr + len, target);
-
-        if (it_low != arr + len && *it_low == target) {
+    int lt = 0;
+    int rt = len - 1;
+    while (lt < rt) {
+        int sum = arr[lt] + arr[rt];
+        if (sum == value) {
             count++;
+            lt++;
+            rt--;
+            while (lt < rt && arr[lt] == arr[lt - 1]) 
+                lt++;
+            while (lt < rt && arr[rt] == arr[rt + 1]) 
+                rt--;
+        } else if (sum < value) {
+            lt++;
+        } else {
+            rt--;
         }
     }
     return count;

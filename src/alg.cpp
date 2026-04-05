@@ -4,7 +4,6 @@
 
 int countPairs1(int* arr, int len, int value) {
     int count = 0;
-
     for (int i = 0; i < len; i++) {
         for (int j = i + 1; j < len; j++) {
             if (arr[i] + arr[j] == value) {
@@ -24,27 +23,24 @@ int countPairs2(int* arr, int len, int value) {
         int sum = arr[lt] + arr[rt];
 
         if (sum == value) {
-            if (arr[lt] == arr[rt]) {
-                int n = rt - lt + 1;
-                count += n * (n - 1) / 2;
-                break;
-            } else {
-                int ltCount = 1;
-                int rtCount = 1;
-
-                while (lt + 1 < rt && arr[lt] == arr[lt + 1]) {
-                    ltCount++;
-                    lt++;
-                }
-
-                while (rt - 1 > lt && arr[rt] == arr[rt - 1]) {
-                    rtCount++;
-                    rt--;
-                }
-
-                count += ltCount * rtCount;
+            int ltVal = arr[lt];
+            int ltCount = 0;
+            while (lt <= rt && arr[lt] == ltVal) {
+                ltCount++;
                 lt++;
+            }
+
+            int rtVal = arr[rt];
+            int rtCount = 0;
+            while (rt >= lt && arr[rt] == rtVal) {
+                rtCount++;
                 rt--;
+            }
+
+            if (ltVal == rtVal) {
+                count += ltCount * (ltCount - 1) / 2;
+            } else {
+                count += ltCount * rtCount;
             }
         } else if (sum < value) {
             lt++;
@@ -59,36 +55,41 @@ int countPairs3(int* arr, int len, int value) {
     int count = 0;
 
     for (int i = 0; i < len; i++) {
-        int numberToFind = value - arr[i];
+        int target = value - arr[i];
 
-        int lt = i + 1;
-        int rt = len - 1;
-        int found = -1;
+        int low = i + 1;
+        int high = len - 1;
+        int first = -1;
 
-        while (lt <= rt) {
-            int center = lt + (rt - lt) / 2;
-            if (arr[center] == numberToFind) {
-                found = center;
-                break;
-            } else if (arr[center] < numberToFind) {
-                lt = center + 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (arr[mid] == target) {
+                first = mid;
+                high = mid - 1;
+            } else if (arr[mid] < target) {
+                low = mid + 1;
             } else {
-                rt = center - 1;
+                high = mid - 1;
             }
         }
 
-        if (found != -1) {
-            count++;
-            int j = found + 1;
-            while (j < len && arr[j] == numberToFind) {
-                count++;
-                j++;
+        if (first != -1) {
+            low = first;
+            high = len - 1;
+            int last = first;
+
+            while (low <= high) {
+                int mid = low + (high - low) / 2;
+                if (arr[mid] == target) {
+                    last = mid;
+                    low = mid + 1;
+                } else if (arr[mid] < target) {
+                    low = mid + 1;
+                } else {
+                    high = mid - 1;
+                }
             }
-            j = found - 1;
-            while (j > i && arr[j] == numberToFind) {
-                count++;
-                j--;
-            }
+            count += (last - first + 1);
         }
 
         while (i + 1 < len && arr[i + 1] == arr[i]) {

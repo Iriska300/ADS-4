@@ -63,13 +63,13 @@ int countPairs3(int* arr, int len, int value) {
 
         int lt = i + 1;
         int rt = len - 1;
-        int firstFound = -1;
+        int found = -1;
 
         while (lt <= rt) {
             int center = lt + (rt - lt) / 2;
             if (arr[center] == numberToFind) {
-                firstFound = center;
-                rt = center - 1; 
+                found = center;
+                break;
             } else if (arr[center] < numberToFind) {
                 lt = center + 1;
             } else {
@@ -77,23 +77,22 @@ int countPairs3(int* arr, int len, int value) {
             }
         }
 
-        if (firstFound != -1) {
-            lt = firstFound;
-            rt = len - 1;
-            int lastFound = firstFound;
-
-            while (lt <= rt) {
-                int center = lt + (rt - lt) / 2;
-                if (arr[center] == numberToFind) {
-                    lastFound = center;
-                    lt = center + 1;
-                } else if (arr[center] < numberToFind) {
-                    lt = center + 1;
-                } else {
-                    rt = center - 1;
-                }
+        if (found != -1) {
+            count++;
+            int j = found + 1;
+            while (j < len && arr[j] == numberToFind) {
+                count++;
+                j++;
             }
-            count += (lastFound - firstFound + 1);
+            j = found - 1;
+            while (j > i && arr[j] == numberToFind) {
+                count++;
+                j--;
+            }
+        }
+
+        while (i + 1 < len && arr[i + 1] == arr[i]) {
+            i++;
         }
     }
     return count;
